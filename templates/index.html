@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Reconciliation Break Predictor</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+
+        body{
+            background:#eef3f8;
+            font-family:Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar{
+            background:#0d6efd;
+        }
+
+        .navbar-brand{
+            font-size:24px;
+            font-weight:bold;
+        }
+
+        .main-card{
+
+            margin-top:40px;
+            border:none;
+            border-radius:15px;
+            box-shadow:0px 5px 18px rgba(0,0,0,0.15);
+
+        }
+
+        .section-title{
+
+            color:#0d6efd;
+            font-weight:bold;
+
+        }
+
+        .btn{
+
+            border-radius:8px;
+
+        }
+
+        .form-control{
+
+            border-radius:8px;
+
+        }
+
+        .result-box{
+
+            background:#e8f5e9;
+            border-left:6px solid #28a745;
+            border-radius:8px;
+            padding:15px;
+            margin-top:20px;
+
+        }
+
+        footer{
+
+            text-align:center;
+            color:gray;
+            margin-top:40px;
+            padding-bottom:20px;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark">
+
+    <div class="container">
+
+        <span class="navbar-brand">
+
+            📊 Reconciliation Break Predictor
+
+        </span>
+
+    </div>
+
+</nav>
+
+<div class="container">
+
+<div class="row justify-content-center">
+
+<div class="col-lg-8">
+
+<div class="card main-card">
+
+<div class="card-body">
+
+<h2 class="text-center section-title mb-4">
+
+Single Trade Prediction
+
+</h2>
+
+<form action="/predict" method="POST">
+
+<div class="row mb-3">
+
+<label class="col-sm-4 col-form-label">
+
+DV01
+
+</label>
+
+<div class="col-sm-8">
+
+<input
+type="number"
+step="any"
+name="DV01"
+class="form-control"
+required>
+
+</div>
+
+</div>
+
+<div class="row mb-3">
+
+<label class="col-sm-4 col-form-label">
+
+Vega
+
+</label>
+
+<div class="col-sm-8">
+
+<input
+type="number"
+step="any"
+name="Vega"
+class="form-control"
+required>
+
+</div>
+
+</div>
+
+<div class="row mb-3">
+
+<label class="col-sm-4 col-form-label">
+
+Gamma
+
+</label>
+
+<div class="col-sm-8">
+
+<input
+type="number"
+step="any"
+name="Gamma"
+class="form-control"
+required>
+
+</div>
+
+</div>
+
+<div class="row mb-3">
+
+<label class="col-sm-4 col-form-label">
+
+Market Move
+
+</label>
+
+<div class="col-sm-8">
+
+<input
+type="number"
+step="any"
+name="MarketMove"
+class="form-control"
+required>
+
+</div>
+
+</div>
+
+<div class="row mb-3">
+
+<label class="col-sm-4 col-form-label">
+
+VaR
+
+</label>
+
+<div class="col-sm-8">
+
+<input
+type="number"
+step="any"
+name="VaR"
+class="form-control"
+required>
+
+</div>
+
+</div>
+
+<div class="row mb-3">
+
+<label class="col-sm-4 col-form-label">
+
+Residual PnL
+
+</label>
+
+<div class="col-sm-8">
+
+<input
+type="number"
+step="any"
+name="ResidualPnL"
+class="form-control"
+required>
+
+</div>
+
+</div>
+
+<div class="row mb-4">
+
+<label class="col-sm-4 col-form-label">
+
+Trade Count
+
+</label>
+
+<div class="col-sm-8">
+
+<input
+type="number"
+name="TradeCount"
+class="form-control"
+required>
+
+</div>
+
+</div>
+
+<div class="d-grid">
+
+<button
+type="submit"
+class="btn btn-primary btn-lg">
+
+Predict Break
+
+</button>
+
+</div>
+
+</form>
+
+{% if prediction_text %}
+
+<div class="result-box">
+
+<h5>
+
+Prediction Result
+
+</h5>
+
+<p class="mb-1">
+
+<strong>{{ prediction_text }}</strong>
+
+</p>
+
+<p class="mb-0">
+
+{{ probability_text }}
+
+</p>
+
+</div>
+
+{% endif %}
+
+<hr class="my-5">
+
+<h2 class="text-center section-title mb-4">
+
+Bulk Prediction
+
+</h2>
+
+<form action="/Bulk_upload"
+      method="POST"
+      enctype="multipart/form-data">
+
+<div class="mb-3">
+
+<label class="form-label">
+
+Upload Input CSV
+
+</label>
+
+<input
+type="file"
+name="file"
+accept=".csv"
+class="form-control"
+required>
+
+</div>
+
+<div class="d-grid">
+
+<button
+type="submit"
+class="btn btn-success btn-lg">
+
+Upload & Predict
+
+</button>
+
+</div>
+
+</form>
+
+<div class="alert alert-info mt-4">
+
+<strong>Note</strong>
+
+<ul class="mb-0 mt-2">
+
+<li>The uploaded file must be in CSV format.</li>
+
+<li>Include all required input columns.</li>
+
+<li>The predicted CSV will download automatically.</li>
+
+</ul>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<footer>
+
+<hr>
+
+<p>
+
+Developed by <strong>Pradeep Joseph</strong>
+
+<br>
+
+Machine Learning | Flask | Random Forest
+
+</p>
+
+</footer>
+
+</body>
+
+</html>
